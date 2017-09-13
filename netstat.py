@@ -4,6 +4,8 @@ import pwd
 import os
 import re
 import glob
+import json
+from pprint import pprint
 
 PROC_TCP = "/proc/net/tcp"
 STATE = {
@@ -41,6 +43,10 @@ def _convert_ip_port(array):
     host,port = array.split(':')
     return _ip(host),_hex2dec(port)
 
+def chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
+
 def netstat():
     '''
     Function to return a list with status of tcp connections at linux systems
@@ -65,11 +71,25 @@ def netstat():
             exe = None
 
         nline = [tcp_id, uid, l_host+':'+l_port, r_host+':'+r_port, state, pid, exe]
-        result.append(nline)
+
+        l = [[ 'tcp_id'], ['uid' ], ['l_host'] ,['l_port'] , ['r_host'] , ['r_port'], ['state'], ['pid'], ['exe']]
+        # print l
+
+
+
+        result = [{: chunk[i] for i in range(len(chunk))}
+            for chunk in chunks(nline, 9)]
+
+        print chunk
+
+        print result
+
         # print "nline", nline
-        with open("netstat_data.json","a+") as f:
-            f.write(str(nline))
-            f.write("\n")
+        # nline_to_write = "{ 'tcp_id':'",tcp_id, " , 'uid:'", uid," , 'l_host:'", l_host, " , 'l_port:'", l_port, " , 'r_host:'", r_host," , 'r_port:'", r_port," , 'state:'", state," , 'pid:'", pid," , 'exe:'", exe , "}"
+        # # print "nline_to_write", nline_to_write
+        # with open("netstat_data.json","a+") as f:
+        #     f.write(str(nline_to_write))
+        #     f.write("\n")
     return result
 
 def _get_pid_of_inode(inode):
