@@ -6,5 +6,5 @@ apt-get install -y git
 git clone https://github.com/richarddennis/netstat_python_log.git
 
 crontab -e
-* * * * *  python /root/netstat_python_log/netstat.py
+* * * * *  /root/netstat_python_log/netstat_tor_script.sh
 ```
