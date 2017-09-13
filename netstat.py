@@ -95,6 +95,41 @@ def netstat():
         fin.close()
         fout.close()
 
+
+
+        #Only logging the IP / Ports
+        nline = [l_host, l_port, r_host, r_port, state]
+        l = ['l_host', 'l_port', 'r_host', 'r_port', 'state']
+
+        result = dict(itertools.izip(l, nline))
+        print result
+
+        path_to_file = "netstat_data_IP.json"
+        with open(path_to_file,"a+") as f:
+            f.write(str(result))
+            f.write(str("\n"))
+
+        infile = "netstat_data_IP.json"
+        outfile = "netstat_data_IP_formatted.json"
+
+        delete_list = ["[", "]"]
+        fin = open(infile)
+        fout = open(outfile, "w+")
+        for line in fin:
+            for word in delete_list:
+                line = line.replace(word, "")
+            fout.write(line)
+        fin.close()
+        fout.close()
+
+        #Removes duplication
+        lines = open('netstat_data_IP_formatted.json', 'r').readlines()
+        lines_set = set(lines)
+        out  = open('netstat_data_IP_formatted.json', 'w')
+
+        for line in lines_set:
+            out.write(line)
+
     return result
 
 def _get_pid_of_inode(inode):
