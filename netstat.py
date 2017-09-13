@@ -6,6 +6,7 @@ import re
 import glob
 import json
 from pprint import pprint
+import itertools
 
 PROC_TCP = "/proc/net/tcp"
 STATE = {
@@ -70,19 +71,13 @@ def netstat():
         except:
             exe = None
 
-        nline = [tcp_id, uid, l_host+':'+l_port, r_host+':'+r_port, state, pid, exe]
+        nline = [tcp_id, uid, l_host, l_port, r_host, r_port, state, pid, exe]
+        l = ['tcp_id', 'uid' , 'l_host', 'l_port', 'r_host', 'r_port', 'state', 'pid', 'exe']
 
-        l = [[ 'tcp_id'], ['uid' ], ['l_host'] ,['l_port'] , ['r_host'] , ['r_port'], ['state'], ['pid'], ['exe']]
-        # print l
-
-
-
-        result = [{: chunk[i] for i in range(len(chunk))}
-            for chunk in chunks(nline, 9)]
-
-        print chunk
-
+        result = dict(itertools.izip(l, nline))
         print result
+
+        #print result
 
         # print "nline", nline
         # nline_to_write = "{ 'tcp_id':'",tcp_id, " , 'uid:'", uid," , 'l_host:'", l_host, " , 'l_port:'", l_port, " , 'r_host:'", r_host," , 'r_port:'", r_port," , 'state:'", state," , 'pid:'", pid," , 'exe:'", exe , "}"
