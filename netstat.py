@@ -77,14 +77,24 @@ def netstat():
         result = dict(itertools.izip(l, nline))
         print result
 
-        #print result
+        path_to_file = "netstat_data.json"
+        with open(path_to_file,"a+") as f:
+            f.write(str(result))
+            f.write(str("\n"))
 
-        # print "nline", nline
-        # nline_to_write = "{ 'tcp_id':'",tcp_id, " , 'uid:'", uid," , 'l_host:'", l_host, " , 'l_port:'", l_port, " , 'r_host:'", r_host," , 'r_port:'", r_port," , 'state:'", state," , 'pid:'", pid," , 'exe:'", exe , "}"
-        # # print "nline_to_write", nline_to_write
-        # with open("netstat_data.json","a+") as f:
-        #     f.write(str(nline_to_write))
-        #     f.write("\n")
+        infile = "netstat_data.json"
+        outfile = "netstat_data_formatted.json"
+
+        delete_list = ["[", "]"]
+        fin = open(infile)
+        fout = open(outfile, "w+")
+        for line in fin:
+            for word in delete_list:
+                line = line.replace(word, "")
+            fout.write(line)
+        fin.close()
+        fout.close()
+
     return result
 
 def _get_pid_of_inode(inode):
