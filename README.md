@@ -9,5 +9,5 @@ chmod +x /root/netstat_python_log/netstat.py
 
 crontab -e
 * * * * * python /root/netstat_python_log/netstat.py
-
+* * * * * python /root/find_replace.py
 ```
