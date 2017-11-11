@@ -13,162 +13,162 @@ import datetime
 
 PROC_TCP = "/proc/net/tcp"  
 STATE = {
-        '01':'ESTABLISHED',
-        '02':'SYN_SENT',
-        '03':'SYN_RECV',
-        '04':'FIN_WAIT1',
-        '05':'FIN_WAIT2',
-        '06':'TIME_WAIT',
-        '07':'CLOSE',
-        '08':'CLOSE_WAIT',
-        '09':'LAST_ACK',
-        '0A':'LISTEN',
-        '0B':'CLOSING'
-        }
+    '01':'ESTABLISHED',
+    '02':'SYN_SENT',
+    '03':'SYN_RECV',
+    '04':'FIN_WAIT1',
+    '05':'FIN_WAIT2',
+    '06':'TIME_WAIT',
+    '07':'CLOSE',
+    '08':'CLOSE_WAIT',
+    '09':'LAST_ACK',
+    '0A':'LISTEN',
+    '0B':'CLOSING'
+    }
 
 def _load():
-    ''' Read the table of tcp connections & remove header  '''
-    with open(PROC_TCP,'r') as f:
-        content = f.readlines()
-        content.pop(0)
-    return content
+''' Read the table of tcp connections & remove header  '''
+with open(PROC_TCP,'r') as f:
+    content = f.readlines()
+    content.pop(0)
+return content
 
 def _hex2dec(s):
-    return str(int(s,16))
+return str(int(s,16))
 
 def _ip(s):
-    ip = [(_hex2dec(s[6:8])),(_hex2dec(s[4:6])),(_hex2dec(s[2:4])),(_hex2dec(s[0:2]))]
-    return '.'.join(ip)
+ip = [(_hex2dec(s[6:8])),(_hex2dec(s[4:6])),(_hex2dec(s[2:4])),(_hex2dec(s[0:2]))]
+return '.'.join(ip)
 
 def _remove_empty(array):
-    return [x for x in array if x !='']
+return [x for x in array if x !='']
 
 def _convert_ip_port(array):
-    host,port = array.split(':')
-    return _ip(host),_hex2dec(port)
+host,port = array.split(':')
+return _ip(host),_hex2dec(port)
 
 def chunks(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i+n]
+for i in range(0, len(l), n):
+    yield l[i:i+n]
 
 def netstat():
-    '''
-    Function to return a list with status of tcp connections at linux systems
-    To get pid of all network process running on system, you must run this script
-    as superuser
-    '''
+'''
+Function to return a list with status of tcp connections at linux systems
+To get pid of all network process running on system, you must run this script
+as superuser
+'''
 
-    content=_load()
-    result = []
-    for line in content:
-        line_array = _remove_empty(line.split(' '))     # Split lines and remove empty spaces.
-        l_host,l_port = _convert_ip_port(line_array[1]) # Convert ipaddress and port from hex to decimal.
-        r_host,r_port = _convert_ip_port(line_array[2])
-        tcp_id = line_array[0]
-        state = STATE[line_array[3]]
-        uid = pwd.getpwuid(int(line_array[7]))[0]       # Get user from UID.
-        inode = line_array[9]                           # Need the inode to get process pid.
-        pid = _get_pid_of_inode(inode)                  # Get pid prom inode.
-        try:                                            # try read the process name.
-            exe = os.readlink('/proc/'+pid+'/exe')
-        except:
-            exe = None
+content=_load()
+result = []
+for line in content:
+    line_array = _remove_empty(line.split(' '))     # Split lines and remove empty spaces.
+    l_host,l_port = _convert_ip_port(line_array[1]) # Convert ipaddress and port from hex to decimal.
+    r_host,r_port = _convert_ip_port(line_array[2])
+    tcp_id = line_array[0]
+    state = STATE[line_array[3]]
+    uid = pwd.getpwuid(int(line_array[7]))[0]       # Get user from UID.
+    inode = line_array[9]                           # Need the inode to get process pid.
+    pid = _get_pid_of_inode(inode)                  # Get pid prom inode.
+    try:                                            # try read the process name.
+        exe = os.readlink('/proc/'+pid+'/exe')
+    except:
+        exe = None
 
-        nline = [tcp_id, uid, l_host, l_port, r_host, r_port, state, pid, exe]
-        l = ['tcp_id', 'uid' , 'l_host', 'l_port', 'r_host', 'r_port', 'state', 'pid', 'exe']
+    nline = [tcp_id, uid, l_host, l_port, r_host, r_port, state, pid, exe]
+    l = ['tcp_id', 'uid' , 'l_host', 'l_port', 'r_host', 'r_port', 'state', 'pid', 'exe']
 
-        result = dict(itertools.izip(l, nline))
-        print result
-	date = time.strftime("%Y-%m-%d")
-        path_to_file = "netstat_data_exit_eight_"+date+".json"
-        with open(path_to_file,"a+") as f:
-            f.write(str(result))
-            f.write(str("\n"))
+    result = dict(itertools.izip(l, nline))
+    print result
+date = time.strftime("%Y-%m-%d")
+    path_to_file = "netstat_data_exit_one_"+date+".json"
+    with open(path_to_file,"a+") as f:
+        f.write(str(result))
+        f.write(str("\n"))
 
-        infile = "netstat_data_exit_eight_"+date+".json"
-        outfile = "netstat_data_exit_eight_formatted_"+date+".json"
+    infile = "netstat_data_exit_one_"+date+".json"
+    outfile = "netstat_data_exit_one_formatted_"+date+".json"
 
-        delete_list = ["[", "]"]
-        fin = open(infile)
-        fout = open(outfile, "w+")
-        for line in fin:
-            for word in delete_list:
-                line = line.replace(word, "")
-            fout.write(line)
-        fin.close()
-        fout.close()
-	
+    delete_list = ["[", "]"]
+    fin = open(infile)
+    fout = open(outfile, "w+")
+    for line in fin:
+        for word in delete_list:
+            line = line.replace(word, "")
+        fout.write(line)
+    fin.close()
+    fout.close()
 
 
-        #Only logging the IP / Ports
-	ts = time.time()
-	st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-	#date = time.strftime("%Y-%m-%d")
-        nline = [l_host, l_port, r_host, r_port, state, st]
-        l = ['l_host', 'l_port', 'r_host', 'r_port', 'state']
 
-        result = dict(itertools.izip(l, nline))
-        print result
+    #Only logging the IP / Ports
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+#date = time.strftime("%Y-%m-%d")
+    nline = [l_host, l_port, r_host, r_port, state, st]
+    l = ['l_host', 'l_port', 'r_host', 'r_port', 'state']
 
-        path_to_file = "netstat_data_exit_eight_IP_"+date+".json"
-        with open(path_to_file,"a+") as f:
-            f.write(str(result))
-            f.write(str("\n"))
+    result = dict(itertools.izip(l, nline))
+    print result
 
-        infile = "netstat_data_exit_eight_IP_"+date+".json"
-        outfile = "netstat_data_exit_eight_IP_formatted_"+date+".json"
+    path_to_file = "netstat_data_exit_one_IP_"+date+".json"
+    with open(path_to_file,"a+") as f:
+        f.write(str(result))
+        f.write(str("\n"))
 
-        delete_list = ["[", "]"]
-        fin = open(infile)
-        fout = open(outfile, "w+")
-        for line in fin:
-            for word in delete_list:
-                line = line.replace(word, "")
-            fout.write(line)
-        fin.close()
-        fout.close()
+    infile = "netstat_data_exit_one_IP_"+date+".json"
+    outfile = "netstat_data_exit_one_IP_formatted_"+date+".json"
 
-        #Removes duplication
-        lines = open('netstat_data_exit_eight_IP_formatted_'+date+'.json', 'r').readlines()
-        lines_set = set(lines)
-        out  = open('netstat_data_exit_eight_IP_formatted_'+date+'.json', 'w')
+    delete_list = ["[", "]"]
+    fin = open(infile)
+    fout = open(outfile, "w+")
+    for line in fin:
+        for word in delete_list:
+            line = line.replace(word, "")
+        fout.write(line)
+    fin.close()
+    fout.close()
 
-        for line in lines_set:
-            out.write(line)
+    #Removes duplication
+    lines = open('netstat_data_exit_one_IP_formatted_'+date+'.json', 'r').readlines()
+    lines_set = set(lines)
+    out  = open('netstat_data_exit_one_IP_formatted_'+date+'.json', 'w')
 
-         #Converts ' to "
-        lines = []
-        replacements = {"'":'"'}
+    for line in lines_set:
+        out.write(line)
+
+     #Converts ' to "
+    lines = []
+    replacements = {"'":'"'}
+    
+    with open('netstat_data_exit_one_IP_formatted_'+date+'.json') as infile:
+        for line in infile:
+            for src, target in replacements.iteritems():
+                line = line.replace(src, target)
+    #re.sub("'(^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$+)'",'\\1',line)
+          line = re.sub("'([0-9]+)'",'\\1',line)
+            lines.append(line)
+    with open('exit_one_IP_data_'+date+'.json', 'w') as outfile:
+        for line in lines:
+            outfile.write(line)
+
+
         
-        with open('netstat_data_exit_eight_IP_formatted_'+date+'.json') as infile:
-            for line in infile:
-                for src, target in replacements.iteritems():
-                    line = line.replace(src, target)
-		    #re.sub("'(^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$+)'",'\\1',line)
-	            line = re.sub("'([0-9]+)'",'\\1',line)
-                lines.append(line)
-        with open('exit_eight_IP_data_'+date+'.json', 'w') as outfile:
-            for line in lines:
-                outfile.write(line)
 
-
-            
-
-    return result
+return result
 
 def _get_pid_of_inode(inode):
-    '''
-    To retrieve the process pid, check every running process and look for one using
-    the given inode.
-    '''
-    for item in glob.glob('/proc/[0-9]*/fd/[0-9]*'):
-        try:
-            if re.search(inode,os.readlink(item)):
-                return item.split('/')[2]
-        except:
-            pass
-    return None
+'''
+To retrieve the process pid, check every running process and look for one using
+the given inode.
+'''
+for item in glob.glob('/proc/[0-9]*/fd/[0-9]*'):
+    try:
+        if re.search(inode,os.readlink(item)):
+            return item.split('/')[2]
+    except:
+        pass
+return None
 
 if __name__ == '__main__':
-    for conn in netstat():
-        print conn
+for conn in netstat():
+    print conn
