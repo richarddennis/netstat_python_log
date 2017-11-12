@@ -80,13 +80,13 @@ def netstat():
         result = dict(itertools.izip(l, nline))
         print result
 	date = time.strftime("%Y-%m-%d")
-        path_to_file = "netstat_data_exit_three_"+date+".json"
+        path_to_file = "netstat_data_exit_four_"+date+".json"
         with open(path_to_file,"a+") as f:
             f.write(str(result))
             f.write(str("\n"))
 
-        infile = "netstat_data_exit_three_"+date+".json"
-        outfile = "netstat_data_exit_three_formatted_"+date+".json"
+        infile = "netstat_data_exit_four_"+date+".json"
+        outfile = "netstat_data_exit_four_formatted_"+date+".json"
 
         delete_list = ["[", "]"]
         fin = open(infile)
@@ -110,13 +110,13 @@ def netstat():
         result = dict(itertools.izip(l, nline))
         print result
 
-        path_to_file = "netstat_data_exit_three_IP_"+date+".json"
+        path_to_file = "netstat_data_exit_four_IP_"+date+".json"
         with open(path_to_file,"a+") as f:
             f.write(str(result))
             f.write(str("\n"))
 
-        infile = "netstat_data_exit_three_IP_"+date+".json"
-        outfile = "netstat_data_exit_three_IP_formatted_"+date+".json"
+        infile = "netstat_data_exit_four_IP_"+date+".json"
+        outfile = "netstat_data_exit_four_IP_formatted_"+date+".json"
 
         delete_list = ["[", "]"]
         fin = open(infile)
@@ -129,9 +129,9 @@ def netstat():
         fout.close()
 
         #Removes duplication
-        lines = open('netstat_data_exit_three_IP_formatted_'+date+'.json', 'r').readlines()
+        lines = open('netstat_data_exit_four_IP_formatted_'+date+'.json', 'r').readlines()
         lines_set = set(lines)
-        out  = open('netstat_data_exit_three_IP_formatted_'+date+'.json', 'w')
+        out  = open('netstat_data_exit_four_IP_formatted_'+date+'.json', 'w')
 
         for line in lines_set:
             out.write(line)
@@ -140,14 +140,14 @@ def netstat():
         lines = []
         replacements = {"'":'"'}
         
-        with open('netstat_data_exit_three_IP_formatted_'+date+'.json') as infile:
+        with open('netstat_data_exit_four_IP_formatted_'+date+'.json') as infile:
             for line in infile:
                 for src, target in replacements.iteritems():
                     line = line.replace(src, target)
 		    #re.sub("'(^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$+)'",'\\1',line)
 	            line = re.sub("'([0-9]+)'",'\\1',line)
                 lines.append(line)
-        with open('exit_three_IP_data_'+date+'.json', 'w') as outfile:
+        with open('exit_four_IP_data_'+date+'.json', 'w') as outfile:
             for line in lines:
                 outfile.write(line)
 
