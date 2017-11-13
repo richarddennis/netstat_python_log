@@ -140,7 +140,7 @@ def netstat():
         lines = []
         replacements = {"'":'"'}
         
-        with open('netstat_data_relay_vultr_two_IP_formatted_'+date+'.json') as infile:
+        with open('netstat_data_relay_vultr_three_IP_formatted_'+date+'.json') as infile:
             for line in infile:
                 for src, target in replacements.iteritems():
                     line = line.replace(src, target)
