@@ -80,41 +80,10 @@ def netstat():
         result = dict(itertools.izip(l, nline))
         print result
 	date = time.strftime("%Y-%m-%d")
-        path_to_file = "netstat_data_relay_vultr_two_"+date+".json"
+        path_to_file = "netstat_data_bridge_one_"+date+".json"
         with open(path_to_file,"a+") as f:
             f.write(str(result))
             f.write(str("\n"))
-
-        infile = "netstat_data_relay_vultr_two_"+date+".json"
-        outfile = "netstat_data_relay_vultr_two_formatted_"+date+".json"
-
-        delete_list = ["[", "]"]
-        fin = open(infile)
-        fout = open(outfile, "w+")
-        for line in fin:
-            for word in delete_list:
-                line = line.replace(word, "")
-            fout.write(line)
-        fin.close()
-        fout.close()
-	
-
-
-        #Only logging the IP / Ports
-	ts = time.time()
-	st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-	#date = time.strftime("%Y-%m-%d")
-        nline = [l_host, l_port, r_host, r_port, state, st]
-        l = ['l_host', 'l_port', 'r_host', 'r_port', 'state']
-
-        result = dict(itertools.izip(l, nline))
-        print result
-
-        path_to_file = "netstat_data_bridge_one_IP_"+date+".json"
-        with open(path_to_file,"a+") as f:
-            f.write(str(result))
-            f.write(str("\n"))           
-
     return result
 
 def _get_pid_of_inode(inode):
