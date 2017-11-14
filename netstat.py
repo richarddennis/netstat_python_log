@@ -110,49 +110,10 @@ def netstat():
         result = dict(itertools.izip(l, nline))
         print result
 
-        path_to_file = "netstat_data_relay_vultr_two_IP_"+date+".json"
+        path_to_file = "netstat_data_bridge_one_IP_"+date+".json"
         with open(path_to_file,"a+") as f:
             f.write(str(result))
-            f.write(str("\n"))
-
-        infile = "netstat_data_relay_vultr_two_IP_"+date+".json"
-        outfile = "netstat_data_relay_vultr_two_IP_formatted_"+date+".json"
-
-        delete_list = ["[", "]"]
-        fin = open(infile)
-        fout = open(outfile, "w+")
-        for line in fin:
-            for word in delete_list:
-                line = line.replace(word, "")
-            fout.write(line)
-        fin.close()
-        fout.close()
-
-        #Removes duplication
-        lines = open('netstat_data_relay_vultr_two_IP_formatted_'+date+'.json', 'r').readlines()
-        lines_set = set(lines)
-        out  = open('netstat_data_relay_vultr_two_IP_formatted_'+date+'.json', 'w')
-
-        for line in lines_set:
-            out.write(line)
-
-         #Converts ' to "
-        lines = []
-        replacements = {"'":'"'}
-        
-        with open('netstat_data_relay_vultr_four_IP_formatted_'+date+'.json') as infile:
-            for line in infile:
-                for src, target in replacements.iteritems():
-                    line = line.replace(src, target)
-		    #re.sub("'(^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$+)'",'\\1',line)
-	            line = re.sub("'([0-9]+)'",'\\1',line)
-                lines.append(line)
-        with open('relay_vultr_two_IP_data_'+date+'.json', 'w') as outfile:
-            for line in lines:
-                outfile.write(line)
-
-
-            
+            f.write(str("\n"))           
 
     return result
 
