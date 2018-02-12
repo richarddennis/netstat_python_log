@@ -80,7 +80,7 @@ def netstat():
         result = dict(itertools.izip(l, nline))
         print result
 	date = time.strftime("%Y-%m-%d")
-        path_to_file = "netstat_data_exit_zetserver_nine_"+date+".json"
+        path_to_file = "netstat_data_exit_zetserver_eight_"+date+".json"
         with open(path_to_file,"a+") as f:
             f.write(str(result))
             f.write(str("\n"))
